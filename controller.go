@@ -4,20 +4,14 @@ import (
 	"net/http"
 )
 
-type Context struct {
+type Controller struct {
 	Request  *http.Request
 	Response http.ResponseWriter
-	Params   []string
-}
-
-type Controller struct {
-	Context *Context
-	Data    map[interface{}]interface{}
-	Name    string
+	Name     string
 }
 
 type ControllerInterface interface {
-	Init(c *Context, name string)
+	Init(req *http.Request, resp http.ResponseWriter, name string)
 	Prepare()
 	Get()
 	Post()
@@ -29,8 +23,9 @@ type ControllerInterface interface {
 	Finish()
 }
 
-func (c *Controller) Init(context *Context, name string) {
-	c.Context = context
+func (c *Controller) Init(req *http.Request, resp http.ResponseWriter, name string) {
+	c.Request = req
+	c.Response = resp
 	c.Name = name
 }
 
@@ -43,29 +38,29 @@ func (c *Controller) Finish() {
 }
 
 func (c *Controller) Get() {
-	http.Error(c.Context.Response, "Method Not Allowed", 405)
+	http.Error(c.Response, "Method Not Allowed", 405)
 }
 
 func (c *Controller) Post() {
-	http.Error(c.Context.Response, "Method Not Allowed", 405)
+	http.Error(c.Response, "Method Not Allowed", 405)
 }
 
 func (c *Controller) Delete() {
-	http.Error(c.Context.Response, "Method Not Allowed", 405)
+	http.Error(c.Response, "Method Not Allowed", 405)
 }
 
 func (c *Controller) Put() {
-	http.Error(c.Context.Response, "Method Not Allowed", 405)
+	http.Error(c.Response, "Method Not Allowed", 405)
 }
 
 func (c *Controller) Head() {
-	http.Error(c.Context.Response, "Method Not Allowed", 405)
+	http.Error(c.Response, "Method Not Allowed", 405)
 }
 
 func (c *Controller) Patch() {
-	http.Error(c.Context.Response, "Method Not Allowed", 405)
+	http.Error(c.Response, "Method Not Allowed", 405)
 }
 
 func (c *Controller) Options() {
-	http.Error(c.Context.Response, "Method Not Allowed", 405)
+	http.Error(c.Response, "Method Not Allowed", 405)
 }
