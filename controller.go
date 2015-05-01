@@ -5,14 +5,16 @@ import (
 )
 
 type Controller struct {
-	Request  *http.Request
-	Response http.ResponseWriter
-	Name     string
+	Request    *http.Request
+	Response   http.ResponseWriter
+	PathParams []string
 }
 
 type ControllerInterface interface {
-	Init(req *http.Request, resp http.ResponseWriter, name string)
+	Init(req *http.Request, resp http.ResponseWriter, pathParmas []string)
 	Prepare()
+	Finish()
+
 	Get()
 	Post()
 	Delete()
@@ -20,13 +22,12 @@ type ControllerInterface interface {
 	Head()
 	Patch()
 	Options()
-	Finish()
 }
 
-func (c *Controller) Init(req *http.Request, resp http.ResponseWriter, name string) {
+func (c *Controller) Init(req *http.Request, resp http.ResponseWriter, pathParams []string) {
 	c.Request = req
 	c.Response = resp
-	c.Name = name
+	c.PathParams = pathParams
 }
 
 func (c *Controller) Prepare() {

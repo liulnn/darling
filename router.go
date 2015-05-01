@@ -2,14 +2,12 @@ package darling
 
 import (
 	"net/http"
-	"reflect"
 	"regexp"
 )
 
 type ControllerInfo struct {
-	controllerType reflect.Type
-	regex          *regexp.Regexp
-	handler        http.Handler
+	regex      *regexp.Regexp
+	controller ControllerInterface
 }
 
 type ControllerRegistor struct {
@@ -30,13 +28,7 @@ func (p *ControllerRegistor) Add(pattern string, c ControllerInterface) {
 		panic(regexErr)
 		return
 	}
-
-	reflectVal := reflect.ValueOf(c)
-	t := reflect.Indirect(reflectVal).Type()
-	route := &ControllerInfo{}
-	route.regex = regex
-	route.controllerType = t
-	p.routers = append(p.routers, route)
+	p.routers = append(p.routers, &ControllerInfo{regex: regex, controller: c})
 }
 
 func (p *ControllerRegistor) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
@@ -48,47 +40,32 @@ func (p *ControllerRegistor) ServeHTTP(rw http.ResponseWriter, r *http.Request) 
 		if !route.regex.MatchString(requestPath) {
 			continue
 		}
-
 		matches := route.regex.FindStringSubmatch(requestPath)
-
 		if len(matches[0]) != len(requestPath) {
 			continue
 		}
 
-		vc := reflect.New(route.controllerType)
-		init := vc.MethodByName("Init")
-		in := make([]reflect.Value, 3)
-		in[0] = reflect.ValueOf(r)
-		in[1] = reflect.ValueOf(rw)
-		in[2] = reflect.ValueOf(route.controllerType.Name())
-		init.Call(in)
-		in = make([]reflect.Value, 0)
-		method := vc.MethodByName("Prepare")
-		method.Call(in)
-		if r.Method == "GET" {
-			method = vc.MethodByName("Get")
-			method.Call(in)
-		} else if r.Method == "POST" {
-			method = vc.MethodByName("Post")
-			method.Call(in)
-		} else if r.Method == "HEAD" {
-			method = vc.MethodByName("Head")
-			method.Call(in)
-		} else if r.Method == "DELETE" {
-			method = vc.MethodByName("Delete")
-			method.Call(in)
-		} else if r.Method == "PUT" {
-			method = vc.MethodByName("Put")
-			method.Call(in)
-		} else if r.Method == "PATCH" {
-			method = vc.MethodByName("Patch")
-			method.Call(in)
-		} else if r.Method == "OPTIONS" {
-			method = vc.MethodByName("Options")
-			method.Call(in)
+		route.controller.Init(r, rw, matches[1:])
+		route.controller.Prepare()
+		switch r.Method {
+		case "OPTIONS":
+			route.controller.Options()
+		case "HEAD":
+			route.controller.Post()
+		case "GET":
+			route.controller.Get()
+		case "POST":
+			route.controller.Post()
+		case "PUT":
+			route.controller.Put()
+		case "DELETE":
+			route.controller.Delete()
+		case "PATCH":
+			route.controller.Patch()
+		default:
+			http.Error(rw, "Method Not Allowed", 405)
 		}
-		method = vc.MethodByName("Finish")
-		method.Call(in)
+		route.controller.Finish()
 		started = true
 		break
 	}
