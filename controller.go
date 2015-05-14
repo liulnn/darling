@@ -6,12 +6,12 @@ import (
 
 type Controller struct {
 	Request    *http.Request
-	Response   http.ResponseWriter
+	Response   *Response
 	PathParams []string
 }
 
 type ControllerInterface interface {
-	Init(req *http.Request, resp http.ResponseWriter, pathParmas []string)
+	Init(req *http.Request, resp *Response, pathParmas []string)
 	Prepare()
 	Finish()
 
@@ -24,7 +24,7 @@ type ControllerInterface interface {
 	Options()
 }
 
-func (c *Controller) Init(req *http.Request, resp http.ResponseWriter, pathParams []string) {
+func (c *Controller) Init(req *http.Request, resp *Response, pathParams []string) {
 	c.Request = req
 	c.Response = resp
 	c.PathParams = pathParams
@@ -39,29 +39,36 @@ func (c *Controller) Finish() {
 }
 
 func (c *Controller) Get() {
-	http.Error(c.Response, "Method Not Allowed", 405)
+	c.Response.StatusCode = 405
+	return
 }
 
 func (c *Controller) Post() {
-	http.Error(c.Response, "Method Not Allowed", 405)
+	c.Response.StatusCode = 405
+	return
 }
 
 func (c *Controller) Delete() {
-	http.Error(c.Response, "Method Not Allowed", 405)
+	c.Response.StatusCode = 405
+	return
 }
 
 func (c *Controller) Put() {
-	http.Error(c.Response, "Method Not Allowed", 405)
+	c.Response.StatusCode = 405
+	return
 }
 
 func (c *Controller) Head() {
-	http.Error(c.Response, "Method Not Allowed", 405)
+	c.Response.StatusCode = 405
+	return
 }
 
 func (c *Controller) Patch() {
-	http.Error(c.Response, "Method Not Allowed", 405)
+	c.Response.StatusCode = 405
+	return
 }
 
 func (c *Controller) Options() {
-	http.Error(c.Response, "Method Not Allowed", 405)
+	c.Response.StatusCode = 405
+	return
 }
