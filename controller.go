@@ -1,9 +1,5 @@
 package darling
 
-import (
-	"net/http"
-)
-
 type Controller struct {
 	Request    *Request
 	Response   *Response
@@ -11,7 +7,7 @@ type Controller struct {
 }
 
 type ControllerInterface interface {
-	Init(req *http.Request, resp *Response, pathParmas []string)
+	Init(req *Request, resp *Response, pathParmas []string)
 	Prepare()
 	Finish()
 

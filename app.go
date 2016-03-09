@@ -19,6 +19,7 @@ func NewApp() *App {
 
 func (app *App) Run(host string, port int) {
 	app.Server.Addr = fmt.Sprintf("%s:%d", host, port)
+	fmt.Printf("%s:%d\n", host, port)
 	app.Server.Handler = app.Handlers
 
 	endRunning := make(chan bool, 1)

@@ -5,7 +5,7 @@ import (
 )
 
 type Request struct {
-	In	http.Request
+	In *http.Request
 }
 
 type Response struct {
