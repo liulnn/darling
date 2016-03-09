@@ -34,6 +34,7 @@ func (p *ControllerRegistor) Add(pattern string, c ControllerInterface) {
 func (p *ControllerRegistor) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 	var started bool
 	requestPath := r.URL.Path
+	req := &Request{In: r}
 	resp := &Response{Out: rw, Header: make(map[string]string)}
 
 	for _, route := range p.routers {
@@ -46,7 +47,7 @@ func (p *ControllerRegistor) ServeHTTP(rw http.ResponseWriter, r *http.Request) 
 			continue
 		}
 
-		route.controller.Init(r, resp, matches[1:])
+		route.controller.Init(req, resp, matches[1:])
 		route.controller.Prepare()
 		switch r.Method {
 		case "OPTIONS":

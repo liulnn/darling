@@ -4,6 +4,10 @@ import (
 	"net/http"
 )
 
+type Request struct {
+	In	http.Request
+}
+
 type Response struct {
 	Out         http.ResponseWriter
 	StatusCode  int

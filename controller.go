@@ -5,7 +5,7 @@ import (
 )
 
 type Controller struct {
-	Request    *http.Request
+	Request    *Request
 	Response   *Response
 	PathParams []string
 }
@@ -24,7 +24,7 @@ type ControllerInterface interface {
 	Options()
 }
 
-func (c *Controller) Init(req *http.Request, resp *Response, pathParams []string) {
+func (c *Controller) Init(req *Request, resp *Response, pathParams []string) {
 	c.Request = req
 	c.Response = resp
 	c.PathParams = pathParams
