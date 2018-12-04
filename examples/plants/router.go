@@ -4,10 +4,10 @@ import (
 	"darling"
 )
 
-var Routers map[string]darling.ControllerInterface
+var Routers *darling.ControllerRegistor
 
 func init() {
-	Routers = make(map[string]darling.ControllerInterface)
-	Routers["/v1/plants/(\\w+)"] = &PlantCtrl{}
-	Routers["/v1/plants"] = &PlantListCtrl{}
+	Routers = darling.NewControllerRegistor()
+	Routers.Add("/v1/plants/(\\w+)", &PlantCtrl{})
+	Routers.Add("/v1/plants", &PlantListCtrl{})
 }

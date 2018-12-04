@@ -31,6 +31,10 @@ func (p *ControllerRegistor) Add(pattern string, c ControllerInterface) {
 	p.routers = append(p.routers, &ControllerInfo{regex: regex, controller: c})
 }
 
+func (p *ControllerRegistor) Extend(q *ControllerRegistor) {
+	p.routers = append(p.routers, q.routers...)
+}
+
 func (p *ControllerRegistor) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 	var started bool
 	requestPath := r.URL.Path

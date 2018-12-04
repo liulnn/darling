@@ -2,12 +2,11 @@ package main
 
 import (
 	"darling"
-	"plant-server/plants"
+	"./plants"
 )
 
 func routerConfig(app *darling.App) {
-	app.Handlers.Add("/v1/plants/(\\w+)", &plants.PlantCtrl{})
-	app.Handlers.Add("/v1/plants", &plants.PlantListCtrl{})
+	app.Handlers.Extend(plants.Routers)
 }
 
 func main() {
