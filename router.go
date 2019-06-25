@@ -10,17 +10,17 @@ type ControllerInfo struct {
 	controller ControllerInterface
 }
 
-type ControllerRegistor struct {
+type ControllerRegister struct {
 	routers []*ControllerInfo
 }
 
-func NewControllerRegistor() *ControllerRegistor {
-	return &ControllerRegistor{
+func NewControllerRegister() *ControllerRegister {
+	return &ControllerRegister{
 		routers: make([]*ControllerInfo, 0),
 	}
 }
 
-func (p *ControllerRegistor) Add(pattern string, c ControllerInterface) {
+func (p *ControllerRegister) Add(pattern string, c ControllerInterface) {
 
 	regex, regexErr := regexp.Compile(pattern)
 	if regexErr != nil {
@@ -31,11 +31,11 @@ func (p *ControllerRegistor) Add(pattern string, c ControllerInterface) {
 	p.routers = append(p.routers, &ControllerInfo{regex: regex, controller: c})
 }
 
-func (p *ControllerRegistor) Extend(q *ControllerRegistor) {
+func (p *ControllerRegister) Extend(q *ControllerRegister) {
 	p.routers = append(p.routers, q.routers...)
 }
 
-func (p *ControllerRegistor) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
+func (p *ControllerRegister) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 	var started bool
 	requestPath := r.URL.Path
 	req := &Request{In: r}

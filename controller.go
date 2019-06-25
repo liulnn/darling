@@ -7,7 +7,7 @@ type Controller struct {
 }
 
 type ControllerInterface interface {
-	Init(req *Request, resp *Response, pathParmas []string)
+	Init(req *Request, resp *Response, pathParams []string)
 	Prepare()
 	Finish()
 

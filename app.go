@@ -7,12 +7,12 @@ import (
 )
 
 type App struct {
-	Handlers *ControllerRegistor
+	Handlers *ControllerRegister
 	Server   *http.Server
 }
 
 func NewApp() *App {
-	cr := NewControllerRegistor()
+	cr := NewControllerRegister()
 	app := &App{Handlers: cr, Server: &http.Server{}}
 	return app
 }
