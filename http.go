@@ -24,3 +24,9 @@ func (resp *Response) Write() {
 	}
 	resp.Out.Write(resp.Content)
 }
+
+func (resp *Response) NormalReturn(statusCode int, contentType string, content []byte) {
+	resp.StatusCode = statusCode
+	resp.ContentType = contentType
+	resp.Content = content
+}
